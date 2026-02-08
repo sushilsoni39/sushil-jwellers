@@ -1,0 +1,7 @@
+{
+  "name": "Sushil Jewellers Management",
+  "description": "An elegant jewelry shop management application featuring live metal prices, product catalog, admin billing, and historical records tracking.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

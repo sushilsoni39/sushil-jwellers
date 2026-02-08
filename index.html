@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sushil Jewellers | Pure Elegance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: 'Montserrat', sans-serif;
+        background-color: #faf9f6;
+      }
+      h1, h2, h3, .font-serif {
+        font-family: 'Playfair Display', serif;
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+      }
+      .gold-gradient {
+        background: linear-gradient(135deg, #d4af37 0%, #f9e29c 50%, #d4af37 100%);
+      }
+      .gold-text {
+        color: #b8860b;
+      }
+      @keyframes progress {
+        0% { width: 0%; }
+        100% { width: 100%; }
+      }
+      @keyframes spin-slow {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      @keyframes pulse-slow {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.8; transform: scale(1.02); }
+      }
+      .animate-spin-slow {
+        animation: spin-slow 8s linear infinite;
+      }
+      .animate-pulse-slow {
+        animation: pulse-slow 4s ease-in-out infinite;
+      }
+
+      /* PRINT OPTIMIZATION for PDF Download */
+      @media print {
+        .no-print {
+          display: none !important;
+        }
+        body {
+          background-color: white !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+        #invoice-printable {
+          display: block !important;
+          width: 100% !important;
+          padding: 2cm !important;
+        }
+        .fixed {
+          position: static !important;
+        }
+        .overflow-y-auto {
+          overflow: visible !important;
+        }
+        .shadow-2xl {
+          box-shadow: none !important;
+        }
+        .bg-white\/80 {
+          background: white !important;
+        }
+        /* Ensure colors print correctly */
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "@google/genai": "https://esm.sh/@google/genai@^1.40.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "html2canvas": "https://esm.sh/html2canvas@1.4.1",
+    "jspdf": "https://esm.sh/jspdf@2.5.1"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
