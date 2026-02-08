@@ -1,104 +1,66 @@
-
-import { GoogleGenAI } from "@google/genai";
 import { MetalType } from "../types";
+import { INITIAL_PRICES } from "../constants";
 
 export class GeminiService {
-  private ai: GoogleGenAI;
-
   constructor() {
-    this.ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    // API client removed to eliminate external dependencies
   }
 
   /**
-   * Helper to call Gemini API with exponential backoff retry logic
+   * Returns local market sentiments without external API calls
    */
-  private async withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
-    let lastError: any;
-    for (let i = 0; i < maxRetries; i++) {
-      try {
-        return await fn();
-      } catch (error: any) {
-        lastError = error;
-        const isRateLimit = error?.status === 429 || 
-                          error?.code === 429 || 
-                          error?.message?.includes('429') || 
-                          error?.message?.includes('quota');
-        
-        if (isRateLimit && i < maxRetries - 1) {
-          const delay = Math.pow(2, i) * 2000 + Math.random() * 1000;
-          console.warn(`Gemini API rate limited. Retrying in ${Math.round(delay)}ms...`);
-          await new Promise(resolve => setTimeout(resolve, delay));
-          continue;
-        }
-        throw error;
-      }
-    }
-    throw lastError;
-  }
-
   async getMarketInsight(metal: string) {
-    try {
-      const response = await this.withRetry(() => this.ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: `Provide a very brief (20 words max) market sentiment for ${metal} prices in India today.`,
-        config: {
-          temperature: 0.7,
-        }
-      }));
-      return response.text || "Stable market conditions expected.";
-    } catch (error) {
-      console.error("Gemini insight error:", error);
-      // Fallback insights based on general trends
-      const fallbacks: Record<string, string> = {
-        'Gold': "Gold remains a preferred hedge against inflation in Indian households.",
-        'Silver': "Industrial demand continues to support silver prices in the domestic market.",
-        'Platinum': "Platinum maintains its luxury appeal with steady investment interest."
-      };
-      return fallbacks[metal] || "Market indicators suggest steady growth for precious metals.";
-    }
+    const sentiments = [
+      `${metal} prices are showing steady consolidation in major Indian hubs.`,
+      `Increased festive demand is providing strong support for ${metal} levels.`,
+      `Investors are closely watching global cues for the next big move in ${metal}.`,
+      `${metal} remains a preferred safe-haven asset for Indian households this season.`,
+      `Retail demand for ${metal} jewelry remains robust despite minor price fluctuations.`
+    ];
+    
+    // Simulate a brief delay for realism
+    await new Promise(resolve => setTimeout(resolve, 300));
+    return sentiments[Math.floor(Math.random() * sentiments.length)];
   }
 
+  /**
+   * Simulates live price updates based on initial benchmarks
+   */
   async fetchLivePrices() {
     try {
-      const response = await this.withRetry(() => this.ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: "Current live market rate per gram in INR for 24K Gold, Silver, and Platinum in India today. Return ONLY 3 numbers separated by commas in this exact order: Gold_Price, Silver_Price, Platinum_Price. Do not include any text, currency symbols, or headers.",
-        config: {
-          tools: [{ googleSearch: {} }],
-        },
-      }));
-
-      const text = response.text || "";
-      const numbers = text.match(/\d+([,.]\d+)?/g);
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 800));
       
-      if (numbers && numbers.length >= 3) {
-        const cleanVal = (s: string) => parseFloat(s.replace(',', ''));
-        return {
-          gold: cleanVal(numbers[0]),
-          silver: cleanVal(numbers[1]),
-          platinum: cleanVal(numbers[2])
-        };
-      }
-      return null;
+      const getPrice = (type: MetalType) => {
+        const base = INITIAL_PRICES.find(p => p.type === type)?.pricePerGram || 5000;
+        // Apply a random fluctuation between -0.5% and +0.5%
+        const fluctuation = 1 + (Math.random() - 0.5) * 0.01;
+        return Math.round(base * fluctuation * 100) / 100;
+      };
+
+      return {
+        gold: getPrice(MetalType.GOLD),
+        silver: getPrice(MetalType.SILVER),
+        platinum: getPrice(MetalType.PLATINUM)
+      };
     } catch (error) {
-      console.error("Failed to fetch live prices via Gemini Search:", error);
+      console.error("Failed to simulate prices:", error);
       return null;
     }
   }
 
+  /**
+   * Generates elegant taglines locally
+   */
   async generateProductTagline(productName: string) {
-    try {
-      const response = await this.withRetry(() => this.ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: `Create a one-line luxury tagline for a jewelry piece named "${productName}".`,
-        config: {
-          temperature: 0.9,
-        }
-      }));
-      return response.text || "Exquisite craftsmanship for your timeless moments.";
-    } catch (error) {
-      return "Timeless elegance for every occasion.";
-    }
+    const templates = [
+      `Embodying the timeless grace of ${productName}.`,
+      `${productName}: A legacy of elegance for the modern queen.`,
+      `Where heritage meets craftsmanship: The ${productName}.`,
+      `Exquisite detail for your most precious moments.`,
+      `The pinnacle of artisanal luxury and sophisticated charm.`
+    ];
+    return templates[Math.floor(Math.random() * templates.length)];
   }
 }
 
